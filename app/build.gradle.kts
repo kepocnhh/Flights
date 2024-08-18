@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import sp.gx.core.camelCase
 import sp.gx.core.getByName
+import sp.gx.core.slashCase
 
 repositories {
     google()
@@ -64,7 +65,13 @@ androidComponents.onVariants { variant ->
         val checkManifestTask = task(camelCase("checkManifest", variant.name)) {
             dependsOn(camelCase("compile", variant.name, "Sources"))
             doLast {
-                val file = "intermediates/merged_manifest/${variant.name}/AndroidManifest.xml"
+                val file = slashCase(
+                    "intermediates",
+                    "merged_manifests",
+                    variant.name,
+                    camelCase("process", variant.name, "Manifest"),
+                    "AndroidManifest.xml",
+                )
                 val manifest = groovy.xml.XmlParser().parse(layout.buildDirectory.file(file).get().asFile)
                 val actual = manifest.getAt(groovy.namespace.QName("uses-permission")).map {
                     check(it is groovy.util.Node)
