@@ -20,9 +20,7 @@ internal class MainActivity : AppCompatActivity() {
         view.setContent {
             val themeState = ThemeState(colorsType = Colors.Type.Light) // todo
             App.Theme.Composition(themeState = themeState) {
-                BackHandler {
-                    finish()
-                }
+                BackHandler(onBack = ::finish)
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

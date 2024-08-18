@@ -98,5 +98,6 @@ androidComponents.onVariants { variant ->
 dependencies {
     implementation("androidx.activity:activity-compose:1.9.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.github.kepocnhh:ComposeAnimations:0.1.0u-SNAPSHOT")
     implementation(compose.foundation)
 }
