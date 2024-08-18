@@ -96,6 +96,7 @@ androidComponents.onVariants { variant ->
 }
 
 dependencies {
+    implementation("androidx.activity:activity-compose:1.9.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation(compose.foundation)
 }
