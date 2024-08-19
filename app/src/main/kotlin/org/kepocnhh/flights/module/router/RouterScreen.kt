@@ -9,13 +9,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.module.flights.FlightsScreen
+import org.kepocnhh.flights.module.passengers.PassengersScreen
 import org.kepocnhh.flights.module.settings.SettingsScreen
+import org.kepocnhh.flights.util.Optional
 import sp.ax.jc.animations.tween.slide.SlideHVisibility
 import java.util.UUID
 
 @Composable
 internal fun RouterScreen() {
     val settingsState = remember { mutableStateOf(false) }
+    val flightState = remember { mutableStateOf<Optional<UUID>?>(null) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -26,13 +29,24 @@ internal fun RouterScreen() {
                 settingsState.value = true
             },
             toFlight = { id: UUID? ->
-                TODO("RouterScreen:toFlight: $id")
+                flightState.value = Optional.ofNullable(id)
             },
         )
         SlideHVisibility(settingsState.value) {
             SettingsScreen(
                 onBack = {
                     settingsState.value = false
+                },
+            )
+        }
+        SlideHVisibility(
+            visible = flightState.value != null,
+        ) {
+            val flightId = remember { flightState.value!! }.get()
+            PassengersScreen(
+                flightId = flightId,
+                onBack = {
+                    flightState.value = null
                 },
             )
         }

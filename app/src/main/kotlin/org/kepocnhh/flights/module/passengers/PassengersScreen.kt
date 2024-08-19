@@ -1,5 +1,6 @@
-package org.kepocnhh.flights.module.flights
+package org.kepocnhh.flights.module.passengers
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,14 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.R
-import org.kepocnhh.flights.entity.Flight
-import org.kepocnhh.flights.module.settings.SettingsScreen
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
 import org.kepocnhh.flights.util.compose.consumeClicks
-import sp.ax.jc.animations.tween.fade.FadeVisibility
-import sp.ax.jc.animations.tween.slide.SlideHVisibility
-import sp.ax.jc.clicks.clicks
 import sp.ax.jc.clicks.onClick
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -47,15 +43,19 @@ import java.util.Locale
 import java.util.UUID
 
 @Composable
-internal fun FlightsScreen(
-    toSettings: () -> Unit,
-    toFlight: (UUID?) -> Unit,
+internal fun PassengersScreen(
+    flightId: UUID?,
+    onBack: () -> Unit,
 ) {
+    BackHandler(onBack = onBack)
     val insets = WindowInsets.systemBars.asPaddingValues()
-    val logics = App.logics<FlightsLogics>()
-    val flights = logics.flights.collectAsState().value
+    val logics = App.logics<PassengersLogics>()
+    val flightIdState = remember { mutableStateOf(flightId) }
+    val passengers = logics.passengers.collectAsState().value
     LaunchedEffect(Unit) {
-        if (flights == null) logics.requestFlights()
+        if (passengers == null && flightId != null) {
+            logics.requestPassengers(flightId)
+        }
     }
     Box(
         modifier = Modifier
@@ -64,21 +64,21 @@ internal fun FlightsScreen(
             .background(App.Theme.colors.background),
     ) {
         when {
-            flights == null -> {
-                // noop
-            }
-            flights.isEmpty() -> {
+            flightId == null || passengers != null && passengers.isEmpty() -> {
                 BasicText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.Center),
-                    text = App.Theme.strings.noFlights,
+                    text = App.Theme.strings.noPassengers,
                     style = TextStyle(
                         fontSize = 16.sp,
                         color = App.Theme.colors.text,
                         textAlign = TextAlign.Center,
                     ),
                 )
+            }
+            passengers == null -> {
+                // noop
             }
             else -> {
                 LazyColumn(
@@ -92,9 +92,9 @@ internal fun FlightsScreen(
                 ) {
                     val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
                     val timeFormat = SimpleDateFormat("hh:mm", Locale.US)
-                    flights.forEach { flight ->
-                        val date = Date(flight.created.inWholeMilliseconds)
-                        item(key = flight.id) {
+                    passengers.forEach { passenger ->
+                        val date = Date(passenger.created.inWholeMilliseconds)
+                        item(key = passenger.id) {
                             Box(
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
@@ -102,7 +102,7 @@ internal fun FlightsScreen(
                                     .background(App.Theme.colors.secondary, RoundedCornerShape(16.dp))
                                     .clip(RoundedCornerShape(16.dp))
                                     .onClick {
-                                        toFlight(flight.id)
+                                        // todo
                                     }
                                     .padding(
                                         horizontal = 16.dp,
@@ -115,16 +115,13 @@ internal fun FlightsScreen(
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
                                     BasicText(
-                                        text = String.format(App.Theme.strings.flightFrom, dateFormat.format(date)),
+                                        text = listOf(
+                                            passenger.person.lastName,
+                                            passenger.person.firstName,
+                                            passenger.person.middleName,
+                                        ).filter { it.isNotEmpty() }.joinToString(separator = " "),
                                         style = TextStyle(
                                             fontSize = 16.sp,
-                                            color = App.Theme.colors.text,
-                                        ),
-                                    )
-                                    BasicText(
-                                        text = String.format(App.Theme.strings.flightCreated, timeFormat.format(date)),
-                                        style = TextStyle(
-                                            fontSize = 14.sp,
                                             color = App.Theme.colors.text,
                                         ),
                                     )
@@ -146,22 +143,15 @@ internal fun FlightsScreen(
                     .padding(16.dp)
                     .align(Alignment.BottomEnd),
             ) {
-                CircleButton(
-                    color = App.Theme.colors.background,
-                    iconColor = App.Theme.colors.foreground,
-                    iconId = R.drawable.gear,
-                    contentDescription = "FlightsScreen:settings",
-                    onClick = toSettings,
-                )
                 Spacer(modifier = Modifier.weight(1f))
                 CircleButton(
                     indication = remember { ColorIndication(Color.White) },
                     color = App.Theme.colors.primary,
                     iconColor = App.Theme.colors.white,
                     iconId = R.drawable.plus,
-                    contentDescription = "FlightsScreen:add",
+                    contentDescription = "PassengersScreen:add",
                     onClick = {
-                        toFlight(null)
+                        // todo
                     },
                 )
             }
