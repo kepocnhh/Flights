@@ -3,6 +3,7 @@ package org.kepocnhh.flights.module.flights
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import org.kepocnhh.flights.App
 import org.kepocnhh.flights.R
 import org.kepocnhh.flights.module.settings.SettingsScreen
 import org.kepocnhh.flights.util.compose.CircleButton
+import org.kepocnhh.flights.util.compose.ColorIndication
 import sp.ax.jc.animations.tween.fade.FadeVisibility
 import sp.ax.jc.animations.tween.slide.SlideHVisibility
 
@@ -27,6 +29,7 @@ import sp.ax.jc.animations.tween.slide.SlideHVisibility
 internal fun FlightsScreen() {
     val insets = WindowInsets.systemBars.asPaddingValues()
     val settingsState = remember { mutableStateOf(false) }
+    val logics = App.logics<FlightsLogics>()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,6 +53,17 @@ internal fun FlightsScreen() {
                     contentDescription = "FlightsScreen:settings",
                     onClick = {
                         settingsState.value = true
+                    },
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                CircleButton(
+                    indication = remember { ColorIndication(Color.White) },
+                    color = App.Theme.colors.primary,
+                    iconColor = App.Theme.colors.white,
+                    iconId = R.drawable.plus,
+                    contentDescription = "FlightsScreen:add",
+                    onClick = {
+                        // todo
                     },
                 )
             }
