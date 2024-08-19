@@ -3,9 +3,7 @@ package org.kepocnhh.flights.entity
 import java.util.UUID
 import kotlin.time.Duration
 
-internal data class Passenger(
+internal data class Flight(
     val id: UUID,
-    val person: Person,
     val created: Duration,
-    val flightId: UUID
 )

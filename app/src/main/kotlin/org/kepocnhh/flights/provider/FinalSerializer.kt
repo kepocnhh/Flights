@@ -7,6 +7,7 @@ import org.kepocnhh.flights.entity.Person
 import org.kepocnhh.flights.util.ListTransformer
 import org.kepocnhh.flights.util.Transformer
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 internal object FinalSerializer : Serializer {
     override val passenger = object : ListTransformer<Passenger> {
@@ -16,6 +17,8 @@ internal object FinalSerializer : Serializer {
                 .put("firstName", decoded.person.firstName)
                 .put("middleName", decoded.person.middleName)
                 .put("lastName", decoded.person.lastName)
+                .put("created", decoded.created.inWholeMilliseconds)
+                .put("flightId", decoded.flightId.toString())
         }
 
         private fun decode(encoded: JSONObject): Passenger {
@@ -27,6 +30,8 @@ internal object FinalSerializer : Serializer {
             return Passenger(
                 id = UUID.fromString(encoded.getString("id")),
                 person = person,
+                created = encoded.getLong("created").milliseconds,
+                flightId = UUID.fromString(encoded.getString("flightId")),
             )
         }
 
