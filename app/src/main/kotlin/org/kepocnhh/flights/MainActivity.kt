@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import org.kepocnhh.flights.module.app.Colors
 import org.kepocnhh.flights.module.app.ThemeState
-import org.kepocnhh.flights.module.flights.FlightsScreen
+import org.kepocnhh.flights.module.router.RouterScreen
 
 internal class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ internal class MainActivity : AppCompatActivity() {
                         .fillMaxSize()
                         .background(App.Theme.colors.background),
                 ) {
-                    FlightsScreen()
+                    RouterScreen()
                 }
             }
         }

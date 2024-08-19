@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.BuildConfig
+import org.kepocnhh.flights.util.compose.consumeClicks
 
 @Composable
 internal fun SettingsScreen(
@@ -27,6 +28,7 @@ internal fun SettingsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .consumeClicks()
             .background(App.Theme.colors.background),
     ) {
         Column(
