@@ -2,7 +2,6 @@ package org.kepocnhh.flights.module.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +12,6 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +46,7 @@ internal fun SettingsVersion(
                         fontSize = 13.sp,
                         color = App.Theme.colors.text,
                     ),
-                    text = "Version", // todo
+                    text = App.Theme.strings.version,
                 )
                 BasicText(
                     modifier = Modifier.align(Alignment.BottomStart),
@@ -64,7 +62,9 @@ internal fun SettingsVersion(
                 )
             }
             BasicText(
-                modifier = Modifier.fillMaxHeight().wrapContentHeight(),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentHeight(),
                 style = TextStyle(
                     fontSize = 17.sp,
                     color = App.Theme.colors.text,

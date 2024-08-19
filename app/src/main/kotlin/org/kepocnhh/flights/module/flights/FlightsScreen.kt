@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.kepocnhh.flights.App
@@ -57,7 +58,17 @@ internal fun FlightsScreen() {
                 // noop
             }
             flights.isEmpty() -> {
-                // todo
+                BasicText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+                    text = App.Theme.strings.noFlights,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = App.Theme.colors.text,
+                        textAlign = TextAlign.Center,
+                    ),
+                )
             }
             else -> {
                 LazyColumn(
@@ -90,14 +101,14 @@ internal fun FlightsScreen() {
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
                                     BasicText(
-                                        text = "Вылет от ${dateFormat.format(date)}", // todo
+                                        text = String.format(App.Theme.strings.flightFrom, dateFormat.format(date)),
                                         style = TextStyle(
                                             fontSize = 16.sp,
                                             color = App.Theme.colors.text,
                                         ),
                                     )
                                     BasicText(
-                                        text = "Время создания ${timeFormat.format(date)}", // todo
+                                        text = String.format(App.Theme.strings.flightCreated, timeFormat.format(date)),
                                         style = TextStyle(
                                             fontSize = 14.sp,
                                             color = App.Theme.colors.text,

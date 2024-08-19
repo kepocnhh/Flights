@@ -11,6 +11,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.coroutines.Dispatchers
 import org.kepocnhh.flights.module.app.Colors
 import org.kepocnhh.flights.module.app.Injection
+import org.kepocnhh.flights.module.app.Strings
 import org.kepocnhh.flights.module.app.ThemeState
 import org.kepocnhh.flights.provider.Contexts
 import org.kepocnhh.flights.provider.FinalLocals
@@ -27,11 +28,17 @@ import sp.kx.logics.remove
 internal class App : Application() {
     object Theme {
         private val LocalColors = staticCompositionLocalOf<Colors> { error("No colors!") }
+        private val LocalStrings = staticCompositionLocalOf<Strings> { error("No strings!") }
 
         val colors: Colors
             @Composable
             @ReadOnlyComposable
             get() = LocalColors.current
+
+        val strings: Strings
+            @Composable
+            @ReadOnlyComposable
+            get() = LocalStrings.current
 
         @Composable
         private fun getColors(colorsType: Colors.Type): Colors {
@@ -48,8 +55,10 @@ internal class App : Application() {
             content: @Composable () -> Unit,
         ) {
             val colors = getColors(themeState.colorsType)
+            val strings = Strings.Ru // todo
             CompositionLocalProvider(
                 LocalColors provides colors,
+                LocalStrings provides strings,
                 content = content,
             )
         }
