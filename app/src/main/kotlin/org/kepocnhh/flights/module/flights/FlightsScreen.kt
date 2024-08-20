@@ -34,6 +34,7 @@ import org.kepocnhh.flights.App
 import org.kepocnhh.flights.R
 import org.kepocnhh.flights.entity.Flight
 import org.kepocnhh.flights.module.passengers.NewPassengerLogics
+import org.kepocnhh.flights.module.passengers.PassengersLogics
 import org.kepocnhh.flights.module.settings.SettingsScreen
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
@@ -42,6 +43,7 @@ import sp.ax.jc.animations.tween.fade.FadeVisibility
 import sp.ax.jc.animations.tween.slide.SlideHVisibility
 import sp.ax.jc.clicks.clicks
 import sp.ax.jc.clicks.onClick
+import sp.ax.jc.dialogs.Dialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,13 +61,27 @@ internal fun FlightsScreen(
     LaunchedEffect(Unit) {
         if (flights == null) logics.requestFlights()
     }
-    val newPassengerLogics = App.logics<NewPassengerLogics>()
     LaunchedEffect(Unit) {
-        newPassengerLogics.events.collect { event ->
+        Flights.events.collect { event ->
             when (event) {
-                is NewPassengerLogics.Event.OnCreate -> logics.requestFlights()
+                is Flights.Event.OnCreate -> logics.requestFlights()
+                is Flights.Event.OnDeleteFlight -> logics.requestFlights()
             }
         }
+    }
+    val deleteFlightState = remember { mutableStateOf<Flight?>(null) }
+    val deleteFlight = deleteFlightState.value
+    if (deleteFlight != null) {
+        Dialog(
+            button = App.Theme.strings.yes to {
+                logics.deleteFlight(flight = deleteFlight)
+                deleteFlightState.value = null
+            },
+            onDismissRequest = {
+                deleteFlightState.value = null
+            },
+            message = App.Theme.strings.deleteFlight,
+        )
     }
     Box(
         modifier = Modifier
@@ -109,11 +125,20 @@ internal fun FlightsScreen(
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .fillMaxWidth()
-                                    .background(App.Theme.colors.secondary, RoundedCornerShape(16.dp))
+                                    .background(
+                                        App.Theme.colors.secondary,
+                                        RoundedCornerShape(16.dp)
+                                    )
                                     .clip(RoundedCornerShape(16.dp))
-                                    .onClick {
-                                        toFlight(flight.id)
-                                    }
+                                    .clicks(
+                                        onClick = {
+                                            println("[Flights]: on click flight: ${flight.id}") // todo
+                                            toFlight(flight.id)
+                                        },
+                                        onLongClick = {
+                                            deleteFlightState.value = flight
+                                        },
+                                    )
                                     .padding(
                                         horizontal = 16.dp,
                                         vertical = 12.dp,

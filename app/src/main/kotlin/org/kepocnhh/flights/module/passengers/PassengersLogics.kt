@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import org.kepocnhh.flights.entity.Passenger
 import org.kepocnhh.flights.module.app.Injection
+import org.kepocnhh.flights.module.flights.Flights
 import sp.kx.logics.Logics
 import java.util.UUID
 
@@ -22,6 +23,22 @@ internal class PassengersLogics(
             injection.locals.passengers
                 .filter { it.flightId == flightId }
                 .sortedBy { it.created }
+        }
+    }
+
+    fun deletePassenger(passenger: Passenger) = launch {
+        logger.debug("delete passenger: ${passenger.id}")
+        val passengers = withContext(injection.contexts.default) {
+            val passengers = injection.locals.passengers.filter { it.id != passenger.id }
+            injection.locals.passengers = passengers
+            passengers
+                .filter { it.flightId == passenger.flightId }
+                .sortedBy { it.created }
+        }
+        if (passengers.isEmpty()) {
+            Flights.events.emit(Flights.Event.OnDeleteFlight(id = passenger.flightId))
+        } else {
+            _passengers.value = passengers
         }
     }
 }

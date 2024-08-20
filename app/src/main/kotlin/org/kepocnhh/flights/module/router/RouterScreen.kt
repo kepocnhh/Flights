@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.kepocnhh.flights.App
@@ -14,7 +14,6 @@ import org.kepocnhh.flights.module.flights.FlightsScreen
 import org.kepocnhh.flights.module.passengers.NewPassengerScreen
 import org.kepocnhh.flights.module.passengers.PassengersScreen
 import org.kepocnhh.flights.module.settings.SettingsScreen
-import org.kepocnhh.flights.util.Optional
 import sp.ax.jc.animations.tween.fade.FadeVisibility
 import sp.ax.jc.animations.tween.slide.SlideHVisibility
 import java.util.UUID
@@ -34,6 +33,7 @@ internal fun RouterScreen() {
                 settingsState.value = true
             },
             toFlight = { id ->
+                println("[Router]: to flight: $id") // todo
                 flightState.value = id
             },
             toNewPassenger = {
@@ -64,7 +64,8 @@ internal fun RouterScreen() {
         SlideHVisibility(
             visible = flightState.value != null,
         ) {
-            val flightId = remember { flightState.value!! }
+            val flightId = remember { mutableStateOf(flightState.value!!) }.value
+            println("[Router]: to passengers: $flightId") // todo
             PassengersScreen(
                 flightId = flightId,
                 onBack = {
@@ -85,7 +86,7 @@ internal fun RouterScreen() {
         SlideHVisibility(
             visible = newPassengerState.value != null,
         ) {
-            val flightId = remember { newPassengerState.value!! }
+            val flightId = remember { mutableStateOf(newPassengerState.value!!) }.value
             NewPassengerScreen(
                 flightId = flightId,
                 onBack = {

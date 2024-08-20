@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.entity.Passenger
 import org.kepocnhh.flights.entity.Person
+import org.kepocnhh.flights.module.flights.Flights
 import org.kepocnhh.flights.util.compose.consumeClicks
 import org.kepocnhh.flights.util.showToast
 import sp.ax.jc.clicks.onClick
@@ -96,9 +97,12 @@ internal fun NewPassengerScreen(
     val logics = App.logics<NewPassengerLogics>()
     val loading = logics.loading.collectAsState().value
     LaunchedEffect(Unit) {
-        logics.events.collect { event ->
+        Flights.events.collect { event ->
             when (event) {
-                is NewPassengerLogics.Event.OnCreate -> onPassenger(event.passenger)
+                is Flights.Event.OnCreate -> onPassenger(event.passenger)
+                is Flights.Event.OnDeleteFlight -> {
+                    // noop
+                }
             }
         }
     }

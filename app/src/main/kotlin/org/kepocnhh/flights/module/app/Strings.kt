@@ -14,6 +14,9 @@ internal sealed interface Strings {
     val dateOfBirth: String
     val notSpecified: String
     val born: String
+    val yes: String
+    val deleteFlight: String
+    val deletePassenger: String
 
     data object Ru : Strings {
         override val version = "Версия"
@@ -29,5 +32,8 @@ internal sealed interface Strings {
         override val dateOfBirth = "Дата рождения"
         override val notSpecified = "Не указано"
         override val born = "Дата рождения %s"
+        override val yes = "Да"
+        override val deleteFlight = "Удалить вылет?"
+        override val deletePassenger = "Удалить пассажира?"
     }
 }

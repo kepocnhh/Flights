@@ -18,6 +18,8 @@ import org.kepocnhh.flights.provider.FinalLocals
 import org.kepocnhh.flights.provider.FinalLoggers
 import org.kepocnhh.flights.provider.FinalSerializer
 import org.kepocnhh.flights.provider.Serializer
+import sp.ax.jc.dialogs.DialogStyle
+import sp.ax.jc.dialogs.LocalDialogStyle
 import sp.kx.logics.Logics
 import sp.kx.logics.LogicsFactory
 import sp.kx.logics.LogicsProvider
@@ -59,6 +61,10 @@ internal class App : Application() {
             CompositionLocalProvider(
                 LocalColors provides colors,
                 LocalStrings provides strings,
+                LocalDialogStyle provides DialogStyle(
+                    background = colors.background,
+                    foreground = colors.text,
+                ),
                 content = content,
             )
         }

@@ -2,7 +2,6 @@ package org.kepocnhh.flights.module.passengers
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,10 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.R
+import org.kepocnhh.flights.entity.Passenger
+import org.kepocnhh.flights.module.flights.Flights
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
 import org.kepocnhh.flights.util.compose.consumeClicks
-import sp.ax.jc.clicks.onClick
+import sp.ax.jc.clicks.clicks
+import sp.ax.jc.dialogs.Dialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -55,15 +57,29 @@ internal fun PassengersScreen(
     LaunchedEffect(Unit) {
         if (passengers == null) logics.requestPassengers(flightId)
     }
-    val newPassengerLogics = App.logics<NewPassengerLogics>()
     LaunchedEffect(Unit) {
-        newPassengerLogics.events.collect { event ->
+        Flights.events.collect { event ->
             when (event) {
-                is NewPassengerLogics.Event.OnCreate -> {
+                is Flights.Event.OnCreate -> {
                     logics.requestPassengers(flightId)
                 }
+                is Flights.Event.OnDeleteFlight -> onBack()
             }
         }
+    }
+    val deletePassengerState = remember { mutableStateOf<Passenger?>(null) }
+    val deletePassenger = deletePassengerState.value
+    if (deletePassenger != null) {
+        Dialog(
+            button = App.Theme.strings.yes to {
+                logics.deletePassenger(passenger = deletePassenger)
+                deletePassengerState.value = null
+            },
+            onDismissRequest = {
+                deletePassengerState.value = null
+            },
+            message = App.Theme.strings.deletePassenger,
+        )
     }
     Box(
         modifier = Modifier
@@ -110,9 +126,14 @@ internal fun PassengersScreen(
                                     .fillMaxWidth()
                                     .background(App.Theme.colors.secondary, RoundedCornerShape(16.dp))
                                     .clip(RoundedCornerShape(16.dp))
-                                    .onClick {
-                                        // todo
-                                    }
+                                    .clicks(
+                                        onClick = {
+                                            // todo
+                                        },
+                                        onLongClick = {
+                                            deletePassengerState.value = passenger
+                                        },
+                                    )
                                     .padding(
                                         horizontal = 16.dp,
                                         vertical = 12.dp,
