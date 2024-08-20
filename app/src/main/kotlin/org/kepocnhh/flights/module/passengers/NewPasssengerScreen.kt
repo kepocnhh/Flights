@@ -253,9 +253,9 @@ internal fun NewPassengerScreen(
                                 middleName = middleNameState.value,
                                 lastName = lastNameState.value,
                             )
-                            if (person.firstName.isEmpty()) {
+                            if (person.firstName.isBlank()) {
                                 context.showToast("firstName!") // todo
-                            } else if (person.lastName.isEmpty()) {
+                            } else if (person.lastName.isBlank()) {
                                 context.showToast("lastName!") // todo
                             } else {
                                 val born = bornState.value

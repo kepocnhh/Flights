@@ -20,6 +20,8 @@ internal class NewPassengerLogics(
         data class OnCreate(val passenger: Passenger) : Event
     }
 
+    private val logger = injection.loggers.create("[NewPassenger]")
+
     private val _events = MutableSharedFlow<Event>()
     val events = _events.asSharedFlow()
 
@@ -31,6 +33,7 @@ internal class NewPassengerLogics(
         person: Person,
         born: Duration,
     ) = launch {
+        logger.debug("create passenger...")
         _loading.value = true
         val passenger = withContext(injection.contexts.default) {
             Passenger(

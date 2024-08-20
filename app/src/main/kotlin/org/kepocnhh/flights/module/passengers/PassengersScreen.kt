@@ -101,7 +101,8 @@ internal fun PassengersScreen(
                     val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
                     val timeFormat = SimpleDateFormat("hh:mm", Locale.US)
                     passengers.forEach { passenger ->
-                        val date = Date(passenger.created.inWholeMilliseconds)
+                        val created = Date(passenger.created.inWholeMilliseconds)
+                        val born = Date(passenger.born.inWholeMilliseconds)
                         item(key = passenger.id) {
                             Box(
                                 modifier = Modifier
@@ -126,10 +127,25 @@ internal fun PassengersScreen(
                                         text = listOf(
                                             passenger.person.lastName,
                                             passenger.person.firstName,
-                                            passenger.person.middleName,
-                                        ).filter { it.isNotEmpty() }.joinToString(separator = " "),
+                                        ).filter { it.isNotBlank() }.joinToString(separator = " "),
                                         style = TextStyle(
                                             fontSize = 16.sp,
+                                            color = App.Theme.colors.text,
+                                        ),
+                                    )
+                                    if (passenger.person.middleName.isNotBlank()) {
+                                        BasicText(
+                                            text = passenger.person.middleName,
+                                            style = TextStyle(
+                                                fontSize = 14.sp,
+                                                color = App.Theme.colors.text,
+                                            ),
+                                        )
+                                    }
+                                    BasicText(
+                                        text = String.format(App.Theme.strings.born, dateFormat.format(born)),
+                                        style = TextStyle(
+                                            fontSize = 14.sp,
                                             color = App.Theme.colors.text,
                                         ),
                                     )

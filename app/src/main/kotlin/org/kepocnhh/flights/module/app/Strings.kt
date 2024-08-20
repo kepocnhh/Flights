@@ -13,6 +13,7 @@ internal sealed interface Strings {
     val middleName: String
     val dateOfBirth: String
     val notSpecified: String
+    val born: String
 
     data object Ru : Strings {
         override val version = "Версия"
@@ -27,5 +28,6 @@ internal sealed interface Strings {
         override val middleName = "Отчество"
         override val dateOfBirth = "Дата рождения"
         override val notSpecified = "Не указано"
+        override val born = "Дата рождения %s"
     }
 }

@@ -19,8 +19,9 @@ internal class PassengersLogics(
     fun requestPassengers(flightId: UUID) = launch {
         logger.debug("request passengers...")
         _passengers.value = withContext(injection.contexts.default) {
-            val passengers = injection.locals.passengers // todo
-            passengers.filter { it.flightId == flightId }
+            injection.locals.passengers
+                .filter { it.flightId == flightId }
+                .sortedBy { it.created }
         }
     }
 }
