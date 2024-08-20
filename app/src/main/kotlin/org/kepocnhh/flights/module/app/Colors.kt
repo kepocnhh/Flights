@@ -10,6 +10,7 @@ internal sealed interface Colors {
     val foreground: Color
     val secondary: Color
     val text: Color
+    val basement: Color
 
     enum class Type {
         Auto,
@@ -20,6 +21,7 @@ internal sealed interface Colors {
     data object Light : Colors {
         override val primary = Color(0xff1E88E5)
         override val white = Color(0xffffffff)
+        override val basement = white
         override val foreground = Color(0xff1f1f1f)
         override val secondary = Color(0xffdfdfdf)
         override val background = Color(0xffefefef)
@@ -33,6 +35,7 @@ internal sealed interface Colors {
         override val background = Color(0xff1f1f1f)
         override val secondary = Color(0xff2f2f2f)
         override val foreground = Color(0xffefefef)
+        override val basement = Color(0xff0f0f0f)
         override val white = Color(0xffffffff)
         override val text = white
     }

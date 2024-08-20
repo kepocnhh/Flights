@@ -8,6 +8,9 @@ internal sealed interface Strings {
     val noPassengers: String
     val newPassenger: String
     val create: String
+    val lastName: String
+    val firstName: String
+    val middleName: String
 
     data object Ru : Strings {
         override val version = "Версия"
@@ -17,5 +20,8 @@ internal sealed interface Strings {
         override val noPassengers = "Нет пассажиров"
         override val newPassenger = "Новый пассажир"
         override val create = "Создать"
+        override val lastName = "Фамилия"
+        override val firstName = "Имя"
+        override val middleName = "Отчество"
     }
 }
