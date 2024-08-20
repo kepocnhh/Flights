@@ -1,5 +1,6 @@
 package org.kepocnhh.flights.module.passengers
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +44,7 @@ import org.kepocnhh.flights.module.flights.Flights
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
 import org.kepocnhh.flights.util.compose.consumeClicks
+import org.kepocnhh.flights.util.showToast
 import sp.ax.jc.clicks.clicks
 import sp.ax.jc.dialogs.Dialog
 import java.text.SimpleDateFormat
@@ -56,8 +59,10 @@ internal fun PassengersScreen(
     toNewPassenger: () -> Unit,
 ) {
     BackHandler(onBack = onBack)
+    val context = LocalContext.current
     val insets = WindowInsets.systemBars.asPaddingValues()
     val logics = App.logics<PassengersLogics>()
+    val loading = logics.loading.collectAsState().value
     val passengers = logics.passengers.collectAsState().value
     LaunchedEffect(Unit) {
         if (passengers == null) logics.requestPassengers(flightId)
@@ -69,6 +74,23 @@ internal fun PassengersScreen(
                     logics.requestPassengers(flightId)
                 }
                 is Flights.Event.OnDeleteFlight -> onBack()
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        logics.events.collect { event ->
+            when (event) {
+                is PassengersLogics.Event.OnExport -> {
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.putExtra(Intent.EXTRA_STREAM, event.file.absolutePath)
+                    intent.type = "*/*"
+                    val mimetypes = arrayOf(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+                    context.startActivity(Intent.createChooser(intent, null))
+//                    context.showToast("file: ${event.file.absolutePath}") // todo
+                }
             }
         }
     }
@@ -184,6 +206,7 @@ internal fun PassengersScreen(
                                         )
                                         .clip(RoundedCornerShape(16.dp))
                                         .clicks(
+                                            enabled = !loading,
                                             onClick = {
                                                 // todo
                                             },
@@ -246,8 +269,19 @@ internal fun PassengersScreen(
                     .padding(16.dp)
                     .align(Alignment.BottomEnd),
             ) {
+                CircleButton(
+                    enabled = !loading,
+                    color = App.Theme.colors.background,
+                    iconColor = App.Theme.colors.foreground,
+                    iconId = R.drawable.download,
+                    contentDescription = "PassengersScreen:export",
+                    onClick = {
+                        logics.exportPassengers(flightId = flightId)
+                    },
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 CircleButton(
+                    enabled = !loading,
                     indication = remember { ColorIndication(Color.White) },
                     color = App.Theme.colors.primary,
                     iconColor = App.Theme.colors.white,
