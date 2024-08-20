@@ -8,6 +8,7 @@ import org.kepocnhh.flights.entity.Person
 import org.kepocnhh.flights.module.app.Injection
 import sp.kx.logics.Logics
 import java.util.UUID
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -34,7 +35,8 @@ internal class PassengersLogics(
                         firstName = "firstName:$number",
                         middleName = "middleName:$number",
                         lastName = "lastName:$number",
-                    )
+                    ),
+                    born = now - (30 * 12 * 20).days + (30 * 12 * number).days,
                 )
             }
             passengers.filter { it.flightId == flightId }

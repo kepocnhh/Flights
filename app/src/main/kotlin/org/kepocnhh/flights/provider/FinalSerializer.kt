@@ -17,6 +17,7 @@ internal object FinalSerializer : Serializer {
                 .put("firstName", decoded.person.firstName)
                 .put("middleName", decoded.person.middleName)
                 .put("lastName", decoded.person.lastName)
+                .put("born", decoded.born.inWholeMilliseconds)
                 .put("created", decoded.created.inWholeMilliseconds)
                 .put("flightId", decoded.flightId.toString())
         }
@@ -30,6 +31,7 @@ internal object FinalSerializer : Serializer {
             return Passenger(
                 id = UUID.fromString(encoded.getString("id")),
                 person = person,
+                born = encoded.getLong("born").milliseconds,
                 created = encoded.getLong("created").milliseconds,
                 flightId = UUID.fromString(encoded.getString("flightId")),
             )
