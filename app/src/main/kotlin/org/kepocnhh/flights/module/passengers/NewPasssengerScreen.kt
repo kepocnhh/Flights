@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -139,6 +140,7 @@ internal fun NewPassengerScreen(
             val middleNameState = remember { mutableStateOf("") }
             val bornState = remember { mutableStateOf<Duration?>(null) }
             val bornDialogState = remember { mutableStateOf(false) }
+            val focusManager = LocalFocusManager.current
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -196,6 +198,7 @@ internal fun NewPassengerScreen(
                                     )
                                     .clip(RoundedCornerShape(16.dp))
                                     .onClick {
+                                        focusManager.clearFocus()
                                         val dialog = DatePickerDialog(context)
                                         dialog.datePicker.maxDate = System.currentTimeMillis()
                                         dialog.setOnDateSetListener { _, year, month, dayOfMonth ->

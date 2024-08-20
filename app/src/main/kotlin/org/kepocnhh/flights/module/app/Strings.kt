@@ -7,6 +7,7 @@ internal sealed interface Strings {
     val flightCreated: String
     val noPassengers: String
     val newPassenger: String
+    val passengers: String
     val create: String
     val lastName: String
     val firstName: String
@@ -25,6 +26,7 @@ internal sealed interface Strings {
         override val flightCreated = "Время создания %s"
         override val noPassengers = "Нет пассажиров"
         override val newPassenger = "Новый пассажир"
+        override val passengers = "Пассажиры"
         override val create = "Создать"
         override val lastName = "Фамилия"
         override val firstName = "Имя"

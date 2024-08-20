@@ -23,7 +23,7 @@ android {
         applicationId = namespace
         minSdk = Version.Android.minSdk
         targetSdk = Version.Android.targetSdk
-        versionCode = 4
+        versionCode = 5
         versionName = "0.0.$versionCode"
         manifestPlaceholders["appName"] = "@string/app_name"
     }
@@ -102,5 +102,6 @@ dependencies {
     implementation("com.github.kepocnhh:ComposeClicks:0.2.3-SNAPSHOT")
     implementation("com.github.kepocnhh:ComposeDialogs:0.1.0-SNAPSHOT")
     implementation("com.github.kepocnhh:Logics:0.1.3-SNAPSHOT")
+    implementation("org.apache.poi:poi-ooxml:5.3.0")
     implementation(compose.foundation)
 }
