@@ -46,6 +46,7 @@ import java.util.UUID
 internal fun PassengersScreen(
     flightId: UUID,
     onBack: () -> Unit,
+    toNewPassenger: () -> Unit,
 ) {
     BackHandler(onBack = onBack)
     val insets = WindowInsets.systemBars.asPaddingValues()
@@ -53,6 +54,16 @@ internal fun PassengersScreen(
     val passengers = logics.passengers.collectAsState().value
     LaunchedEffect(Unit) {
         if (passengers == null) logics.requestPassengers(flightId)
+    }
+    val newPassengerLogics = App.logics<NewPassengerLogics>()
+    LaunchedEffect(Unit) {
+        newPassengerLogics.events.collect { event ->
+            when (event) {
+                is NewPassengerLogics.Event.OnCreate -> {
+                    logics.requestPassengers(flightId)
+                }
+            }
+        }
     }
     Box(
         modifier = Modifier
@@ -147,9 +158,7 @@ internal fun PassengersScreen(
                     iconColor = App.Theme.colors.white,
                     iconId = R.drawable.plus,
                     contentDescription = "PassengersScreen:add",
-                    onClick = {
-                        // todo
-                    },
+                    onClick = toNewPassenger,
                 )
             }
         }

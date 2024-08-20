@@ -24,16 +24,6 @@ internal fun RouterScreen() {
     val settingsState = remember { mutableStateOf(false) }
     val flightState = remember { mutableStateOf<UUID?>(null) }
     val newPassengerState = remember { mutableStateOf<UUID?>(null) }
-    val shadowState = remember { mutableStateOf(false) }
-    LaunchedEffect(
-        settingsState.value,
-        flightState.value,
-        newPassengerState.value,
-    ) {
-        shadowState.value = settingsState.value ||
-            flightState.value != null ||
-            newPassengerState.value != null
-    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +40,7 @@ internal fun RouterScreen() {
                 newPassengerState.value = UUID.randomUUID()
             },
         )
-        FadeVisibility(shadowState.value) {
+        FadeVisibility(settingsState.value) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -64,6 +54,13 @@ internal fun RouterScreen() {
                 },
             )
         }
+        FadeVisibility(flightState.value != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.75f)),
+            )
+        }
         SlideHVisibility(
             visible = flightState.value != null,
         ) {
@@ -73,6 +70,16 @@ internal fun RouterScreen() {
                 onBack = {
                     flightState.value = null
                 },
+                toNewPassenger = {
+                    newPassengerState.value = flightId
+                },
+            )
+        }
+        FadeVisibility(newPassengerState.value != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.75f)),
             )
         }
         SlideHVisibility(
