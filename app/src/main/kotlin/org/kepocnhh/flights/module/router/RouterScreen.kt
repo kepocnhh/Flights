@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.module.flights.FlightsScreen
+import org.kepocnhh.flights.module.passengers.NewPassengerScreen
 import org.kepocnhh.flights.module.passengers.PassengersScreen
 import org.kepocnhh.flights.module.settings.SettingsScreen
 import org.kepocnhh.flights.util.Optional
@@ -18,7 +19,8 @@ import java.util.UUID
 @Composable
 internal fun RouterScreen() {
     val settingsState = remember { mutableStateOf(false) }
-    val flightState = remember { mutableStateOf<Optional<UUID>?>(null) }
+    val flightState = remember { mutableStateOf<UUID?>(null) }
+    val newPassengerState = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -28,9 +30,12 @@ internal fun RouterScreen() {
             toSettings = {
                 settingsState.value = true
             },
-            toFlight = { id: UUID? ->
-                flightState.value = Optional.ofNullable(id)
+            toFlight = { id ->
+                flightState.value = id
             },
+            toNewPassenger = {
+                newPassengerState.value = true
+            }
         )
         SlideHVisibility(settingsState.value) {
             SettingsScreen(
@@ -42,11 +47,18 @@ internal fun RouterScreen() {
         SlideHVisibility(
             visible = flightState.value != null,
         ) {
-            val flightId = remember { flightState.value!! }.get()
+            val flightId = remember { flightState.value!! }
             PassengersScreen(
                 flightId = flightId,
                 onBack = {
                     flightState.value = null
+                },
+            )
+        }
+        SlideHVisibility(newPassengerState.value) {
+            NewPassengerScreen(
+                onBack = {
+                    newPassengerState.value = false
                 },
             )
         }

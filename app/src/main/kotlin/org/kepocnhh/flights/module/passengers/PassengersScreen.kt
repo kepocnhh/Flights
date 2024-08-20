@@ -44,18 +44,15 @@ import java.util.UUID
 
 @Composable
 internal fun PassengersScreen(
-    flightId: UUID?,
+    flightId: UUID,
     onBack: () -> Unit,
 ) {
     BackHandler(onBack = onBack)
     val insets = WindowInsets.systemBars.asPaddingValues()
     val logics = App.logics<PassengersLogics>()
-    val flightIdState = remember { mutableStateOf(flightId) }
     val passengers = logics.passengers.collectAsState().value
     LaunchedEffect(Unit) {
-        if (passengers == null && flightId != null) {
-            logics.requestPassengers(flightId)
-        }
+        if (passengers == null) logics.requestPassengers(flightId)
     }
     Box(
         modifier = Modifier
@@ -64,7 +61,10 @@ internal fun PassengersScreen(
             .background(App.Theme.colors.background),
     ) {
         when {
-            flightId == null || passengers != null && passengers.isEmpty() -> {
+            passengers == null -> {
+                // noop
+            }
+            passengers.isEmpty() -> {
                 BasicText(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -76,9 +76,6 @@ internal fun PassengersScreen(
                         textAlign = TextAlign.Center,
                     ),
                 )
-            }
-            passengers == null -> {
-                // noop
             }
             else -> {
                 LazyColumn(

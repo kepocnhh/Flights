@@ -49,7 +49,8 @@ import java.util.UUID
 @Composable
 internal fun FlightsScreen(
     toSettings: () -> Unit,
-    toFlight: (UUID?) -> Unit,
+    toFlight: (UUID) -> Unit,
+    toNewPassenger: () -> Unit,
 ) {
     val insets = WindowInsets.systemBars.asPaddingValues()
     val logics = App.logics<FlightsLogics>()
@@ -160,9 +161,7 @@ internal fun FlightsScreen(
                     iconColor = App.Theme.colors.white,
                     iconId = R.drawable.plus,
                     contentDescription = "FlightsScreen:add",
-                    onClick = {
-                        toFlight(null)
-                    },
+                    onClick = toNewPassenger,
                 )
             }
         }
