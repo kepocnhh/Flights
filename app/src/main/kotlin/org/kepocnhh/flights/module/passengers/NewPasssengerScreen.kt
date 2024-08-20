@@ -1,7 +1,6 @@
 package org.kepocnhh.flights.module.passengers
 
 import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,13 +32,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import org.kepocnhh.flights.App
+import org.kepocnhh.flights.entity.Passenger
+import org.kepocnhh.flights.entity.Person
 import org.kepocnhh.flights.util.compose.consumeClicks
+import org.kepocnhh.flights.util.showToast
 import sp.ax.jc.clicks.onClick
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -82,11 +86,22 @@ private fun TextField(
 
 @Composable
 internal fun NewPassengerScreen(
+    flightId: UUID,
     onBack: () -> Unit,
+    onPassenger: (Passenger) -> Unit,
 ) {
     BackHandler(onBack = onBack)
     val context = LocalContext.current
     val insets = WindowInsets.systemBars.asPaddingValues()
+    val logics = App.logics<NewPassengerLogics>()
+    val loading = logics.loading.collectAsState().value
+    LaunchedEffect(Unit) {
+        logics.events.collect { event ->
+            when (event) {
+                is NewPassengerLogics.Event.OnCreate -> onPassenger(event.passenger)
+            }
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -115,6 +130,10 @@ internal fun NewPassengerScreen(
                     .height(1.dp)
                     .background(App.Theme.colors.secondary),
             )
+            val lastNameState = remember { mutableStateOf("") }
+            val firstNameState = remember { mutableStateOf("") }
+            val middleNameState = remember { mutableStateOf("") }
+            val bornState = remember { mutableStateOf<Duration?>(null) }
             val bornDialogState = remember { mutableStateOf(false) }
             LazyColumn(
                 modifier = Modifier
@@ -130,10 +149,6 @@ internal fun NewPassengerScreen(
                                 vertical = 8.dp,
                             ),
                     ) {
-                        val lastNameState = remember { mutableStateOf("") }
-                        val firstNameState = remember { mutableStateOf("") }
-                        val middleNameState = remember { mutableStateOf("") }
-                        val bornState = remember { mutableStateOf<Duration?>(null) }
                         TextField(
                             title = App.Theme.strings.lastName,
                             state = lastNameState,
@@ -180,12 +195,21 @@ internal fun NewPassengerScreen(
                                         val dialog = DatePickerDialog(context)
                                         dialog.datePicker.maxDate = System.currentTimeMillis()
                                         dialog.setOnDateSetListener { _, year, month, dayOfMonth ->
-                                            bornState.value = Date(year - 1900, month, dayOfMonth).time.milliseconds
+                                            bornState.value = Date(
+                                                year - 1900,
+                                                month,
+                                                dayOfMonth
+                                            ).time.milliseconds
                                         }
                                         val born = bornState.value
                                         if (born != null) {
                                             val date = Date(born.inWholeMilliseconds)
-                                            dialog.datePicker.init(date.year + 1900, date.month, date.date, null)
+                                            dialog.datePicker.init(
+                                                date.year + 1900,
+                                                date.month,
+                                                date.date,
+                                                null
+                                            )
                                         }
                                         dialog.show()
                                     }
@@ -223,8 +247,28 @@ internal fun NewPassengerScreen(
                         .height(56.dp)
                         .background(App.Theme.colors.primary, RoundedCornerShape(16.dp))
                         .clip(RoundedCornerShape(16.dp))
-                        .onClick {
-                            // todo
+                        .onClick(enabled = !loading) {
+                            val person = Person(
+                                firstName = firstNameState.value,
+                                middleName = middleNameState.value,
+                                lastName = lastNameState.value,
+                            )
+                            if (person.firstName.isEmpty()) {
+                                context.showToast("firstName!") // todo
+                            } else if (person.lastName.isEmpty()) {
+                                context.showToast("lastName!") // todo
+                            } else {
+                                val born = bornState.value
+                                if (born == null) {
+                                    context.showToast("born!") // todo
+                                } else {
+                                    logics.createPassenger(
+                                        flightId = flightId,
+                                        person = person,
+                                        born = born,
+                                    )
+                                }
+                            }
                         }
                         .padding(horizontal = 16.dp)
                         .wrapContentSize(),

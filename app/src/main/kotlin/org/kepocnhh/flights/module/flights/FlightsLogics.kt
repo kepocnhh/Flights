@@ -6,10 +6,6 @@ import kotlinx.coroutines.withContext
 import org.kepocnhh.flights.entity.Flight
 import org.kepocnhh.flights.module.app.Injection
 import sp.kx.logics.Logics
-import java.util.UUID
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
 
 internal class FlightsLogics(
     private val injection: Injection,
@@ -29,14 +25,6 @@ internal class FlightsLogics(
                 }.sortedBy {
                     it.created
                 }
-            // todo
-            val now = System.currentTimeMillis().milliseconds
-            (11..50).map { number ->
-                Flight(
-                    id = UUID(0, number.toLong()),
-                    created = now - 100.hours + number.hours + (number * 2).minutes,
-                )
-            }
         }
     }
 }

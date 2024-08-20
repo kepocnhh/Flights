@@ -8,5 +8,5 @@ internal data class Passenger(
     val person: Person,
     val born: Duration,
     val created: Duration,
-    val flightId: UUID
+    val flightId: UUID,
 )

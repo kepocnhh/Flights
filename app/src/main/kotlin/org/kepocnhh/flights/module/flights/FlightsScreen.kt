@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.R
 import org.kepocnhh.flights.entity.Flight
+import org.kepocnhh.flights.module.passengers.NewPassengerLogics
 import org.kepocnhh.flights.module.settings.SettingsScreen
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
@@ -57,6 +58,14 @@ internal fun FlightsScreen(
     val flights = logics.flights.collectAsState().value
     LaunchedEffect(Unit) {
         if (flights == null) logics.requestFlights()
+    }
+    val newPassengerLogics = App.logics<NewPassengerLogics>()
+    LaunchedEffect(Unit) {
+        newPassengerLogics.events.collect { event ->
+            when (event) {
+                is NewPassengerLogics.Event.OnCreate -> logics.requestFlights()
+            }
+        }
     }
     Box(
         modifier = Modifier
@@ -92,7 +101,7 @@ internal fun FlightsScreen(
                     ),
                 ) {
                     val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.US)
-                    val timeFormat = SimpleDateFormat("hh:mm", Locale.US)
+                    val timeFormat = SimpleDateFormat("HH:mm", Locale.US)
                     flights.forEach { flight ->
                         val date = Date(flight.created.inWholeMilliseconds)
                         item(key = flight.id) {
