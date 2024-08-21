@@ -101,6 +101,7 @@ dependencies {
     implementation("com.github.kepocnhh:ComposeAnimations:0.1.0u-SNAPSHOT")
     implementation("com.github.kepocnhh:ComposeClicks:0.2.3-SNAPSHOT")
     implementation("com.github.kepocnhh:ComposeDialogs:0.1.0-SNAPSHOT")
+    implementation("com.github.kepocnhh:ComposeSquares:0.0.1u-SNAPSHOT")
     implementation("com.github.kepocnhh:Logics:0.1.3-SNAPSHOT")
     implementation("org.apache.poi:poi-ooxml:5.3.0")
     implementation(compose.foundation)

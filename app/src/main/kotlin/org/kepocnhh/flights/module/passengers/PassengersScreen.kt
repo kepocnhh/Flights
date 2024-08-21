@@ -45,8 +45,10 @@ import org.kepocnhh.flights.module.flights.Flights
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
 import org.kepocnhh.flights.util.compose.consumeClicks
+import sp.ax.jc.animations.tween.fade.FadeVisibility
 import sp.ax.jc.clicks.clicks
 import sp.ax.jc.dialogs.Dialog
+import sp.ax.jc.squares.Squares
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -284,6 +286,19 @@ internal fun PassengersScreen(
                     iconId = R.drawable.plus,
                     contentDescription = "PassengersScreen:add",
                     onClick = toNewPassenger,
+                )
+            }
+        }
+        FadeVisibility(loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.75f)),
+            ) {
+                Squares(
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    color = App.Theme.colors.background,
                 )
             }
         }
