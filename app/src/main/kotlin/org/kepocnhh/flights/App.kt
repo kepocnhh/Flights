@@ -8,6 +8,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import org.kepocnhh.flights.module.app.Colors
 import org.kepocnhh.flights.module.app.Injection
@@ -20,6 +23,8 @@ import org.kepocnhh.flights.provider.FinalSerializer
 import org.kepocnhh.flights.provider.Serializer
 import sp.ax.jc.dialogs.DialogStyle
 import sp.ax.jc.dialogs.LocalDialogStyle
+import sp.ax.jc.squares.LocalSquaresStyle
+import sp.ax.jc.squares.SquaresStyle
 import sp.kx.logics.Logics
 import sp.kx.logics.LogicsFactory
 import sp.kx.logics.LogicsProvider
@@ -64,6 +69,13 @@ internal class App : Application() {
                 LocalDialogStyle provides DialogStyle(
                     background = colors.background,
                     foreground = colors.text,
+                ),
+                LocalSquaresStyle provides SquaresStyle(
+                    color = colors.foreground,
+                    squareSize = DpSize(width = 32.dp, height = 32.dp),
+                    paddingOffset = DpOffset(x = 16.dp, y = 16.dp),
+                    cornerRadius = 8.dp,
+                    backgroundContext = Dispatchers.Default,
                 ),
                 content = content,
             )
