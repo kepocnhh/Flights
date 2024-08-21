@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import org.kepocnhh.flights.App
 import org.kepocnhh.flights.R
 import org.kepocnhh.flights.entity.Passenger
@@ -44,7 +45,6 @@ import org.kepocnhh.flights.module.flights.Flights
 import org.kepocnhh.flights.util.compose.CircleButton
 import org.kepocnhh.flights.util.compose.ColorIndication
 import org.kepocnhh.flights.util.compose.consumeClicks
-import org.kepocnhh.flights.util.showToast
 import sp.ax.jc.clicks.clicks
 import sp.ax.jc.dialogs.Dialog
 import java.text.SimpleDateFormat
@@ -82,14 +82,10 @@ internal fun PassengersScreen(
             when (event) {
                 is PassengersLogics.Event.OnExport -> {
                     val intent = Intent(Intent.ACTION_SEND)
-                    intent.putExtra(Intent.EXTRA_STREAM, event.file.absolutePath)
-                    intent.type = "*/*"
-                    val mimetypes = arrayOf(
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    )
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
-                    context.startActivity(Intent.createChooser(intent, null))
-//                    context.showToast("file: ${event.file.absolutePath}") // todo
+                    val uri = FileProvider.getUriForFile(context, "provider", event.file)
+                    intent.putExtra(Intent.EXTRA_STREAM, uri)
+                    intent.type = "application/xml"
+                    context.startActivity(Intent.createChooser(intent, event.file.name))
                 }
             }
         }
